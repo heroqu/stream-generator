@@ -2,6 +2,12 @@
 
 Makes a readable stream based on any byte generator (a function that returns an iterator on bytes).
 
+## Setup
+
+```
+npm install stream-generator
+```
+
 ## Usage
 
 ### TL,DR
@@ -99,7 +105,9 @@ Please keep in mind that the stream we've just created is endless, so the follow
 byteStream.pipe(fs.createWriteStream('./some_file.txt'))
 ```
 
-One interesting way of using such a deterministic stream is the ability to reproducibly create big file of specified size and same exact content on the fly, which can be helpful when testing big file uploads etc.
+### Big files generation
+
+One interesting way of using such a deterministic stream is the ability to reproducibly create big files of specified size and same exact content on the fly, which can be helpful when testing big files uploads etc.
 
 Let's create one:  
 
