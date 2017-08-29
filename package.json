@@ -1,0 +1,34 @@
+{
+  "name": "stream-generator",
+  "version": "0.1.0",
+  "description": "Makes a readable stream out of random/pseudo-random/any number generator.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test/tests.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/heroqu/stream-generator.git"
+  },
+  "keywords": [
+    "stream",
+    "readable",
+    "generator",
+    "bytes",
+    "pseudo-random",
+    "stub"
+  ],
+  "author": "Heroqu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/heroqu/stream-generator/issues"
+  },
+  "homepage": "https://github.com/heroqu/stream-generator#readme",
+  "devDependencies": {
+    "@offirmo/random": "^2.0.4",
+    "chai": "^4.1.1",
+    "hash-through": "^0.1.13",
+    "mocha": "^3.5.0",
+    "stream-limiter": "^0.1.6"
+  }
+}
