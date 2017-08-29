@@ -1,6 +1,6 @@
 {
   "name": "stream-generator",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Makes a readable stream out of random/pseudo-random/any number generator.",
   "main": "index.js",
   "scripts": {
