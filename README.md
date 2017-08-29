@@ -66,7 +66,7 @@ Many random and pseudo-random number modules can easily produce integers (or arr
 const { Random } = require('@offirmo/random')
 
 // we then wrap it into a form of ES6 'generator function'
-function *integerGenerator(seed) {
+function *IntegerGenerator(seed) {
   const mt = Random.engines.mt19937()
   mt.seed(seed)
   while (true){
@@ -89,7 +89,7 @@ function ByteGenerator (integerGenerator) {
 
 // Put it all together:
 const SEED = 123
-const intGen = integerGenerator(SEED)   // integer generator is ready
+const intGen = IntegerGenerator(SEED)   // integer generator is ready
 
 const byteGen = ByteGenerator(intGen)   // byte generator is ready
 
@@ -107,13 +107,13 @@ byteStream.pipe(fs.createWriteStream('./some_file.txt'))
 
 ### Big files generation
 
-One interesting way of using such a deterministic stream is the ability to reproducibly create big files of specified size and same exact content on the fly, which can be helpful when testing big files uploads etc.
+One interesting way of using such a deterministic stream is the ability to **reproducibly** create big files of specified size and same exact content on the fly, which can be helpful when testing big files uploads etc.
 
 Let's create one:  
 
 ```javascript
-// we would need a way to cut the stream after certain number of bytes,
-// e.g. with this module
+// we would need a way to cut the stream after certain
+// number of bytes, e.g. with this module
 const StreamLimiter = require('stream-limiter')
 const limiter = StreamLimiter(10*1024*1024)
 // means: cut the stream exactly after 10Mb has passed through
