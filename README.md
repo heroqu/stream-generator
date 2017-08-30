@@ -1,6 +1,6 @@
 # stream-generator
 
-Makes a readable stream based on any byte generator (a function that returns an iterator on bytes).
+Make a readable stream out of any byte generator. An easy way to wrap a random, pseudo-random or just any number generator into a stream of bytes.
 
 ## Setup
 

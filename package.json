@@ -1,7 +1,7 @@
 {
   "name": "stream-generator",
   "version": "0.1.2",
-  "description": "Makes a readable stream out of random/pseudo-random/any number generator.",
+  "description": "Make a readable stream out of any byte generator. An easy way to wrap a random, pseudo-random or just any number generator into a stream of bytes.",
   "main": "index.js",
   "scripts": {
     "test": "mocha test/tests.js"
