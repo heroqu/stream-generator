@@ -20,9 +20,9 @@ byteStream.pipe(process.stdout)
 
 ### Explanation and working examples
 
-*Stream-generator* can be used to convert any random, or pseudo-random (or, really just *any*) byte generator into a readable stream.
+As already said *Stream-generator* can turn a byte generator into a readable stream.
 
-But what exactly is *byte-generator*?
+But what exactly is *byte generator*?
 
 A hard coded and simplistic byte generator can look like this:
 
@@ -68,7 +68,8 @@ Let's say we have a random number generator that produces integer values in the 
 const { Random } = require('@offirmo/random')
 
 // we then wrap it into a form of ES6 'generator function'
-function *IntegerGenerator(seed) {
+function *IntegerGenerator() {
+  const seed = 123 // hard coded seed for simplicity
   const mt = Random.engines.mt19937()
   mt.seed(seed)
   while (true){
@@ -91,12 +92,8 @@ function ByteGenerator (integerGenerator) {
 }
 
 // Put it all together:
-const SEED = 123
-const intGen = IntegerGenerator(SEED)   // integer generator is ready
-
-const byteGen = ByteGenerator(intGen)   // byte generator is ready
-
-const byteStream = StreamGenerator(byteGen) // stream is ready
+const byteGen = ByteGenerator(IntegerGenerator)
+const byteStream = StreamGenerator(byteGen)
 ```
 
 Please keep in mind that the stream we've just created is endless, so the following example would never stop unless is explicitly terminated:
@@ -108,9 +105,9 @@ Please keep in mind that the stream we've just created is endless, so the follow
 byteStream.pipe(fs.createWriteStream('./some_file.txt'))
 ```
 
-### Big files generation
+## Big files generation
 
-One interesting way of using such a deterministic stream is the ability to **reproducibly** create big files of specified size and same exact content on the fly, which can be helpful when testing big files uploads etc.
+One interesting way of using such a deterministic stream is the ability to **reproducibly** create files of specified size and same exact content on the fly, which can be helpful when testing big files uploads etc.
 
 Let's create one:  
 
@@ -137,7 +134,7 @@ dest.on('finish', function(){
 
 ### Fixed length streams: other way around
 
-In the previous example we've cut the stream during piping, means afterwards. We can to it in another way by cutting the sequence of bytes at the byte generation stage with this generator limiter function:
+In the previous example we've cut the stream during piping, means afterwards. We can do it another way by cutting the sequence of bytes at the byte generation stage (i.e. before streaming) with this generator limiter function:
 
 ```javascript
 function LimitedGenerator (generator, size) {
@@ -154,13 +151,18 @@ function LimitedGenerator (generator, size) {
 And here is full listing for big file generation with this approach:
 
 ```javascript
+// reproducibly create big file with
+// pseudorandom bytes and specified size
+const StreamGenerator = require('stream-generator')
 const { Random } = require('@offirmo/random')
 
-function *IntegerGenerator(seed) {
-  const mt = Random.engines.mt19937()
-  mt.seed(seed)
-  while (true){
-    yield mt()
+function IntegerGenerator (seed) {
+  return function * () {
+    const mt = Random.engines.mt19937()
+    mt.seed(seed)
+    while (true) {
+      yield mt()
+    }
   }
 }
 
@@ -191,17 +193,17 @@ const filepath = path.resolve(__dirname, 'a_sample.txt')
 const dest = fs.createWriteStream(filepath)
 
 const SEED = 123
-const intGen = IntegerGenerator(SEED)   
-const byteGen = ByteGenerator(intGen)   
+const intGen = IntegerGenerator(SEED)
+const byteGen = ByteGenerator(intGen)
 
-const sizeInBytes = 10*1024*1024
+const sizeInBytes = 10 * 1024 * 1024
 const byteGenLtd = LimitedGenerator(byteGen, sizeInBytes)
 
 const byteStreamLtd = StreamGenerator(byteGenLtd)
 
 byteStreamLtd.pipe(dest)
 
-dest.on('finish', function(){
+dest.on('finish', function () {
   console.log(fs.statSync(filepath).size)
 })
 ```
