@@ -167,8 +167,6 @@ function *IntegerGenerator(seed) {
 function ByteGenerator (integerGenerator) {
   return function * () {
     for (let int of integerGenerator()) {
-      // Extract each of the 4 bytes of the integer
-      // and yield them one after another
       yield int & 0xff
       yield (int >> 8) & 0xff
       yield (int >> 16) & 0xff
@@ -202,6 +200,10 @@ const byteGenLtd = LimitedGenerator(byteGen, sizeInBytes)
 const byteStreamLtd = StreamGenerator(byteGenLtd)
 
 byteStreamLtd.pipe(dest)
+
+dest.on('finish', function(){
+  console.log(fs.statSync(filepath).size)
+})
 ```
 
 ## Dependencies
