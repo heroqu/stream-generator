@@ -58,7 +58,7 @@ The stream is deterministic (i.e. each instance produces the same exact sequence
 
 ### Wrapping pseudo random number generators
 
-Then we want it to spit out bytes. Many random and pseudo-random number modules can easily produce integers (or array of integers) but not bytes out of the box. Yes, I know, there is neither **Integer**, nor **Byte** type in javascript. We do only have **Number** type for everything. But what we are talking about here is values, not types.
+OK, we have to feed stream generator with bytes. But many random and pseudo-random number modules can easily produce integers (or array of integers) but not bytes out of the box. Yes, I know, there is neither **Integer**, nor **Byte** type in javascript, we do only have **Number** type for everything. But what we are talking about here is values, not types.
 
 Let's say we have a random number generator that produces integer values in the range of 0...(2^32-1) while we would like it to produce integer values in the range 0...255 which can be interpreted as bytes. The following simple technique can be used to achieve that:
 
