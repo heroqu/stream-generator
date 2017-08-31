@@ -151,16 +151,56 @@ function LimitedGenerator (generator, size) {
 }
 ```
 
-And now instead of
+And here is full listing for big file generation with this approach:
 
 ```javascript
-byteStream.pipe(limiter).pipe(dest)
-```
+const { Random } = require('@offirmo/random')
 
-we can write:
+function *IntegerGenerator(seed) {
+  const mt = Random.engines.mt19937()
+  mt.seed(seed)
+  while (true){
+    yield mt()
+  }
+}
 
-```javascript
-const byteStreamLtd = LimitedGenerator(byteStream, 10*1024*1024)
+function ByteGenerator (integerGenerator) {
+  return function * () {
+    for (let int of integerGenerator()) {
+      // Extract each of the 4 bytes of the integer
+      // and yield them one after another
+      yield int & 0xff
+      yield (int >> 8) & 0xff
+      yield (int >> 16) & 0xff
+      yield (int >> 24) & 0xff
+    }
+  }
+}
+
+function LimitedGenerator (generator, size) {
+  let count = 0
+  return function * () {
+    for (let value of generator()) {
+      if (++count > size) return
+      yield value
+    }
+  }
+}
+
+const fs = require('fs')
+const path = require('path')
+const filepath = path.resolve(__dirname, 'a_sample.txt')
+const dest = fs.createWriteStream(filepath)
+
+const SEED = 123
+const intGen = IntegerGenerator(SEED)   
+const byteGen = ByteGenerator(intGen)   
+
+const sizeInBytes = 10*1024*1024
+const byteGenLtd = LimitedGenerator(byteGen, sizeInBytes)
+
+const byteStreamLtd = StreamGenerator(byteGenLtd)
+
 byteStreamLtd.pipe(dest)
 ```
 
