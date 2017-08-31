@@ -10,7 +10,7 @@ npm install stream-generator
 
 ## Usage
 
-### TL,DR
+### TL;DR
 
 ```javascript
 const StreamGenerator = require('stream-generator')
@@ -52,13 +52,15 @@ byteStream.pipe(process.stdout)   // output> Marshal
 
 Same code as at the top of the page, but now it works, as we got a real byte generator. And because we have chosen a very particular set of bytes we see a nice output. In general that is not always the case as some byte values would be shown as garbage or not be shown at all in regular terminal window.
 
-### Deterministic streams
+## Deterministic streams
 
-The stream is deterministic if underlying byte generator is deterministic. This leads us to a vast range of pseudo-random number generators available to choose from, but one has to be sure to use a deterministic one.
+The stream is deterministic (i.e. each instance produces the same exact sequence of data) if underlying byte generator is deterministic. This leads us to a vast range of pseudo-random number generators available to choose from, but not all of them are deterministic and one has to keep that in mind when selecting.
 
 ### Wrapping pseudo random number generators
 
-Many random and pseudo-random number modules can easily produce integers (or array of integers) but not bytes out of the box. One can use a simple technique to wrap such a generator into byte generator:
+Then we want it to spit out bytes. Many random and pseudo-random number modules can easily produce integers (or array of integers) but not bytes out of the box. Yes, I know, there is neither **Integer**, nor **Byte** type in javascript. We do only have **Number** type for everything. But what we are talking about here is values, not types.
+
+Let's say we have a random number generator that produces integer values in the range of 0...(2^32-1) while we would like it to produce integer values in the range 0...255 which can be interpreted as bytes. The following simple technique can be used to achieve that:
 
 ```javascript
 // first we need some module with genuine deterministic pseudo-random
@@ -78,7 +80,8 @@ function *IntegerGenerator(seed) {
 function ByteGenerator (integerGenerator) {
   return function * () {
     for (let int of integerGenerator()) {
-      // slice each integer into 4 bytes to yield one after another
+      // Extract each of the 4 bytes of the integer
+      // and yield them one after another
       yield int & 0xff
       yield (int >> 8) & 0xff
       yield (int >> 16) & 0xff
@@ -130,6 +133,35 @@ byteStream.pipe(limiter).pipe(dest)
 dest.on('finish', function(){
   console.log(fs.statSync(filepath).size) // output> 10485760
 })
+```
+
+### Fixed length streams: other way around
+
+In the previous example we've cut the stream during piping, means afterwards. We can to it in another way by cutting the sequence of bytes at the byte generation stage with this generator limiter function:
+
+```javascript
+function LimitedGenerator (generator, size) {
+  let count = 0
+  return function * () {
+    for (let value of generator()) {
+      if (++count > size) return
+      yield value
+    }
+  }
+}
+```
+
+And now instead of
+
+```javascript
+byteStream.pipe(limiter).pipe(dest)
+```
+
+we can write:
+
+```javascript
+const byteStreamLtd = LimitedGenerator(byteStream, 10*1024*1024)
+byteStreamLtd.pipe(dest)
 ```
 
 ## Dependencies
