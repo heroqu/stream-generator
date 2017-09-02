@@ -96,14 +96,7 @@ const byteGen = ByteGenerator(IntegerGenerator)
 const byteStream = StreamGenerator(byteGen)
 ```
 
-Please keep in mind that the stream we've just created is endless, so the following example would never stop unless is explicitly terminated:
-
-```javascript
-// don't run it as it will gradually eat all the disk space and
-// you will have to terminate the process with
-// `kill -9 < proc_id >` or whatever (depends on OS)
-byteStream.pipe(fs.createWriteStream('./some_file.txt'))
-```
+We've just created an endless stream of pseudo-random bytes.
 
 ## Big files generation
 
@@ -115,8 +108,7 @@ Let's create one:
 // we would need a way to cut the stream after certain
 // number of bytes, e.g. with this module
 const StreamLimiter = require('stream-limiter')
-const limiter = StreamLimiter(10*1024*1024)
-// means: cut the stream exactly after 10Mb has passed through
+const limiter = StreamLimiter(10*1024*1024) // cut after 10Mb
 
 // prepare destination file stream
 const fs = require('fs')
@@ -124,7 +116,7 @@ const path = require('path')
 const filepath = path.resolve(__dirname, 'a_sample.txt')
 const dest = fs.createWriteStream(filepath)
 
-// take byteStream from previous long listing and pipe it
+// take byteStream from previous listing and pipe it
 byteStream.pipe(limiter).pipe(dest)
 
 dest.on('finish', function(){
@@ -134,7 +126,7 @@ dest.on('finish', function(){
 
 ### Fixed length streams: other way around
 
-In the previous example we've cut the stream during piping, means afterwards. We can do it another way by cutting the sequence of bytes at the byte generation stage (i.e. before streaming) with this generator limiter function:
+In the previous example we've cut the stream during piping. We can do it another way by cutting the sequence of bytes beforehand at the byte generation stage with this generator limiter function:
 
 ```javascript
 function LimitedGenerator (generator, size) {
@@ -148,11 +140,11 @@ function LimitedGenerator (generator, size) {
 }
 ```
 
-And here is full listing for big file generation with this approach:
+And here is the full listing for big file generation with this approach:
 
 ```javascript
-// reproducibly create big file with
-// pseudorandom bytes and specified size
+// reproducibly create a file of specified size
+// filled with pseudo-random bytes
 const StreamGenerator = require('stream-generator')
 const { Random } = require('@offirmo/random')
 
