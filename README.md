@@ -29,13 +29,15 @@ A hard coded and simplistic byte generator can look like this:
 ```javascript
 function *simplisticByteGenerator() {
   // spits out bytes, which correspond to ascii chars:
-  // 'M','a','r','s','h','a','l'
+  // 'M','a','r','s','h','a','l','l'
+  // (like in 'Donald Marshall')
   yield 77
   yield 97
   yield 114
   yield 115
   yield 104
   yield 97
+  yield 108
   yield 108
 }
 ```
@@ -47,7 +49,7 @@ Let's do it:
 ```javascript
 const StreamGenerator = require('stream-generator')
 const byteStream = StreamGenerator(simplisticByteGenerator)
-byteStream.pipe(process.stdout)   // output> Marshal
+byteStream.pipe(process.stdout)   // output> Marshall
 ```
 
 Same code as at the top of the page, but now it works, as we got a real byte generator. And because we have chosen a very particular set of bytes we see a nice output. In general that is not always the case as some byte values would be shown as garbage or not be shown at all in regular terminal window.
@@ -63,8 +65,8 @@ OK, we have to feed stream generator with bytes. But many random and pseudo-rand
 Let's say we have a random number generator that produces integer values in the range of 0...(2^32-1) while we would like it to produce integer values in the range 0...255 which can be interpreted as bytes. The following simple technique can be used to achieve that:
 
 ```javascript
-// first we need some module with genuine deterministic pseudo-random
-// integer generator, e.g. like this one
+// first we need some module with genuine deterministic
+// pseudo-random integer generator, e.g. like this one
 const { Random } = require('@offirmo/random')
 
 // we then wrap it into a form of ES6 'generator function'
@@ -196,7 +198,7 @@ const byteStreamLtd = StreamGenerator(byteGenLtd)
 byteStreamLtd.pipe(dest)
 
 dest.on('finish', function () {
-  console.log(fs.statSync(filepath).size)
+  console.log(fs.statSync(filepath).size) // output> 10485760
 })
 ```
 
