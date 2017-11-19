@@ -4,9 +4,7 @@ Make a readable stream out of any byte generator. An easy way to wrap a random, 
 
 ## Setup
 
-```
-npm install stream-generator
-```
+`npm install stream-generator`
 
 ## Usage
 
@@ -30,7 +28,6 @@ A hard coded and simplistic byte generator can look like this:
 function *simplisticByteGenerator() {
   // spits out bytes, which correspond to ascii chars:
   // 'M','a','r','s','h','a','l','l'
-  // (like in 'Donald Marshall')
   yield 77
   yield 97
   yield 114
@@ -204,4 +201,4 @@ dest.on('finish', function () {
 
 ## Dependencies
 
-None.
+For *"a stable streams base, regardless of what version of Node you are using"* we use [readable-stream](https://www.npmjs.com/package/readable-stream) standalone stream module instead of Node core implementation (read elaboration on this [here](https://r.va.gg/2014/06/why-i-dont-use-nodes-core-stream-module.html)).

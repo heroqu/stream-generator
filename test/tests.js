@@ -20,7 +20,7 @@ const crypto = require('crypto')
 const DevNull = require('./devnull')
 const eventPromise = require('./event-promise')
 
-const stream = require('stream')
+const stream = require('readable-stream')
 
 describe('Stream Generator', function () {
   before(function (done) {
@@ -33,7 +33,7 @@ describe('Stream Generator', function () {
 
   function deleteFile (done) {
     if (fs.existsSync(filepath)) {
-      fs.unlink(filepath)
+      fs.unlinkSync(filepath)
     }
     done()
   }

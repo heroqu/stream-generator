@@ -26,9 +26,12 @@
   "homepage": "https://github.com/heroqu/stream-generator#readme",
   "devDependencies": {
     "@offirmo/random": "^2.0.4",
-    "chai": "^4.1.1",
-    "hash-through": "^0.1.13",
-    "mocha": "^3.5.0",
-    "stream-limiter": "^0.1.6"
+    "chai": "^4.1.2",
+    "hash-through": "^0.1.15",
+    "mocha": "^4.0.1",
+    "stream-limiter": "^0.1.9"
+  },
+  "dependencies": {
+    "readable-stream": "^2.3.3"
   }
 }

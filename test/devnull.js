@@ -1,6 +1,6 @@
 'use strict'
 
-const { Writable } = require('stream')
+const { Writable } = require('readable-stream')
 const setImmediate = (1, eval)('this').setImmediate
   || function (fn) { setTimeout(fn, 0) }
 
