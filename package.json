@@ -27,11 +27,11 @@
   "devDependencies": {
     "@offirmo/random": "^2.0.4",
     "chai": "^4.1.2",
-    "hash-through": "^0.1.15",
-    "mocha": "^4.0.1",
-    "stream-limiter": "^0.1.9"
+    "hash-through": "^0.1.16",
+    "mocha": "^5.2.0",
+    "stream-limiter": "^0.1.10"
   },
   "dependencies": {
-    "readable-stream": "^2.3.3"
+    "readable-stream": "^2.3.6"
   }
 }
